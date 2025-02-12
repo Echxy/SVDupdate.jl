@@ -33,7 +33,6 @@ e_buf = zeros(size(Q,1))
 bQ1 = zeros(m,n+1)
 bR = zeros(n+1,n+1)
 bSVD = zeros(n+1,n+1)
-bS = zeros(n+1,n+1)
 bV = zeros(n+1,n+1)
 ############################
 
@@ -51,7 +50,7 @@ reset_timer!(SVDupdate.tt)
 @timeit SVDupdate.tt "total Speed" begin
     while n < n_final
         @timeit SVDupdate.tt "Speed Update" begin
-           Q,S,R = UpdateISVD_iterative(Q,S,R,A[:,n+1] ,d_buf,e_buf,bQ1,bR,bS,bSVD,bV)
+           Q,S,R = UpdateISVD_iterative(Q,S,R,A[:,n+1] ,d_buf,e_buf,bQ1,bR,bSVD,bV)
         end
         #end
         n = n+1
@@ -66,7 +65,6 @@ reset_timer!(SVDupdate.tt)
                 bQ1 = zeros(m,n+1)
                 bR = zeros(n+1,n+1)
                 bSVD = zeros(n+1,n+1)
-                bS = zeros(n+1,n+1)
                 bV = zeros(n+1,n+1)
                 ############################
             end
@@ -89,7 +87,6 @@ e_buf = zeros(size(Q,1))
 bQ1 = zeros(m,n+1)
 bR = zeros(n+1,n+1)
 bSVD = zeros(n+1,n+1)
-bS = zeros(n+1,n+1)
 bV = zeros(n+1,n+1)
 
 
@@ -97,7 +94,7 @@ reset_timer!(SVDupdate.tt)
 @timeit SVDupdate.tt "total memory" begin
     while n < n_final
         @timeit SVDupdate.tt "Memory Update" begin
-           Q,S,R =  UpdateISVD_memory_iterative(Q,S,R,Bb[:,n+1] ,d_buf,e_buf,bQ1,bR,bS,bSVD,bV)
+           Q,S,R =  UpdateISVD_memory_iterative(Q,S,R,Bb[:,n+1] ,d_buf,e_buf,bQ1,bR,bSVD,bV)
         end
         n = n + 1
 
@@ -112,7 +109,6 @@ reset_timer!(SVDupdate.tt)
                 bQ1 = zeros(m,n+1)
                 bR = zeros(n+1,n+1)
                 bSVD = zeros(n+1,n+1)
-                bS = zeros(n+1,n+1)
                 bV = zeros(n+1,n+1)
                 ############################
             end

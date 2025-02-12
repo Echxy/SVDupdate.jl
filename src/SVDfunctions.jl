@@ -170,7 +170,7 @@ end
 
 function UpdateISVD_memory_iterative(Q, S, R, u,
     d,
-    e,Q1,R1,S1,U1,V1)
+    e,Q1,R1,U1,V1)
 
 
     k = length(S)
@@ -211,7 +211,7 @@ end
 
 function UpdateISVD_iterative(Q, S, R, u,
     d,
-    e,Q1,R1,S1,U1,V1)
+    e,Q1,R1,U1,V1)
 
     k = length(S)
 
