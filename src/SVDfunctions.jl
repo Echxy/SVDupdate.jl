@@ -165,3 +165,84 @@ function UpdateISVD_memory(Q, S, R, u,
     end
     
 end
+
+
+
+function UpdateISVD_memory_iterative(Q, S, R, u,
+    d,
+    e,Q1,R1,S1,U1,V1)
+
+
+    k = length(S)
+
+    mul!(d, Q', u)
+    mul!(e, Q, d)
+    @. e = u - e
+    p = norm(e)
+    e ./= p
+
+
+    for j in 1:size(Q, 2)
+        qj = @view Q[:, j]
+        α = dot(e, qj)
+        BLAS.axpy!(-α, qj, e)    
+    end
+    normalize!(e)
+
+    """
+    memory_svd!(U1,S,v,p)
+    return S 
+
+    """
+    
+    AS = memory_svd!(U1,S,d,p,V1)
+            
+    @inbounds @views begin
+        #S1[diagind(S1)] .= AS
+        R1[k+1, :] .= V1[k+1:k+1,:]'
+        mul!(view(R1, 1:k, :), R,view(V1, 1:k, :))
+        mul!(Q1, Q, view(U1, 1:k, :))    
+        mul!(Q1, e, view(U1, k+1:k+1, :), 1.0, 1.0) 
+    end
+    return Q1 , AS, R1
+end
+
+
+
+function UpdateISVD_iterative(Q, S, R, u,
+    d,
+    e,Q1,R1,S1,U1,V1)
+
+    k = length(S)
+
+    mul!(d, Q', u)
+    mul!(e, Q, d)
+    @. e = u - e
+    p = norm(e)
+    e ./= p
+
+
+    for j in 1:size(Q, 2)
+        qj = @view Q[:, j]
+        α = dot(e, qj)
+        BLAS.axpy!(-α, qj, e)    
+    end
+    normalize!(e)
+    
+
+    """
+    mini_svd!(U1,S,v,p,V1)
+    return S
+    """
+    
+    AS = mini_svd!(U1,S,d,p,V1)
+        
+    @inbounds @views begin
+        #S1[diagind(S1)] .= AS
+        R1[k+1, :] .= V1[k+1:k+1,:]'
+        mul!(view(R1, 1:k, :), R,view(V1, 1:k, :))
+        mul!(Q1, Q, view(U1, 1:k, :))    
+        mul!(Q1, e, view(U1, k+1:k+1, :), 1.0, 1.0)  
+    end
+    return Q1 , AS, R1
+end 
