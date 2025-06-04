@@ -20,7 +20,7 @@ function mini_svd!(bSVD,S,v,p,V)
     o = sortperm(ss, rev=true) 
     permute!(ss,o)
     V .= @view V1[:,o]
-    ss .= sqrt.(ss) 
+    ss .= sqrt.(abs.(ss)) 
     
     @timeit tt "U asignations" begin
 
@@ -73,6 +73,40 @@ function memory_svd!(bSVD,S,v,p,V)
 
     return ss
 end
+
+function UpdateISVD_row(Q, S, R,a,p,Q1)
+
+    m = size(Q,1)
+    k = length(S)   
+    
+    @timeit tt  "process" begin
+
+        mul!(p, a, R)
+        view(Q1, 1:m, 1:k) .= view(Q, 1:m, 1:k)
+        @inbounds @fastmath for i in 1:k
+            Q1[m+1, i] = p[i] / S[i]  
+        end
+
+    end  
+end
+
+function UpdateISVD_row_iterative(Q, S, R,a,p,Q1)
+
+    m = size(Q,1)
+    k = length(S)   
+    
+    @timeit tt  "process" begin
+
+        mul!(p, a, R)
+        view(Q1, 1:m, 1:k) .= view(Q, 1:m, 1:k)
+        @inbounds @fastmath for i in 1:k
+            Q1[m+1, i] = p[i] / S[i]  
+        end
+
+    end  
+    return Q1
+end
+
 
 
 function UpdateISVD(Q, S, R, u,
